@@ -1,0 +1,37 @@
+{
+  "name": "rainwarm",
+  "description": "MD5 Checker",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "author": {
+    "name": "initencounter",
+    "email": "2911583893@qq.com",
+    "url": "https://github.com/initialencounter"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/initialencounter/rainwarm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/initialencounter/rainwarm/issues"
+  },
+  "homepage": "https://github.com/initialencounter/rainwarm#README",
+  "dependencies": {
+    "vue": "^3.3.4",
+    "@tauri-apps/api": "^1.5.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "typescript": "^5.0.2",
+    "vite": "^5.0.0",
+    "vue-tsc": "^1.8.5",
+    "@tauri-apps/cli": "^1.5.8"
+  }
+}
