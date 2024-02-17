@@ -5,8 +5,8 @@ use md5::compute;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn drag_file(data: &str) -> String {
-    let result = compute(&data);
+fn drag_file(data: String) -> String {
+    let result = compute(data.as_bytes());
     let md5_hex: String = format!("{:x}", result);
     md5_hex[..16].to_string()
 }
