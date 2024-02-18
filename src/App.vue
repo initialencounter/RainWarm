@@ -2,7 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import {ref} from "vue";
-import {invoke} from "@tauri-apps/api/tauri";
+import SparkMD5 from 'spark-md5';
 import {calculateColorBrightness, formatTimestamp} from './utils.ts'
 
 // forked from https://www.zhihu.com/question/26744174/answer/2468892079
@@ -45,42 +45,46 @@ function dropEvent(event: DragEvent) {
 
 function displayChsFile(files: FileList) {
   for (const file of files) {
-    // if (file.type === '') {
-    //   continue
-    // }
-    // @ts-ignore
-    file_list.value[String(file_id)] = {
-      name: file.name,
-      lastModified: formatTimestamp(file.lastModified),
-      md5: 'loading...',
-      color: colorList[0],
+    if (file_list.value) {
+      file_list.value[String(file_id)] = {
+        name: file.name,
+        lastModified: formatTimestamp(file.lastModified),
+        md5: 'loading...',
+        color: colorList[0],
+      }
     }
-    console.dir(file_list)
     colorList.splice(0, 1)
     getMd5(file, file_id)
     file_id++
   }
 }
 
-function getMd5(file: Blob, id: number) {
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const fileData = event!.target!.result;
-    invoke('drag_file', {data: fileData}).then((res) => {
-      // @ts-ignore
-      file_list.value[String(id)]['md5'] = res
-      // @ts-ignore
-      for (const value of Object.values(file_list.value)) {
+function getMd5(blob: Blob, id: number) {
+  return new Promise<string>(() => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const spark = new SparkMD5.ArrayBuffer();
+      spark.append(reader.result as ArrayBuffer);
+      const res = spark.end().slice(0, 16);
+      if (file_list.value) {
+        file_list.value[String(id)]['md5'] = res
+      }
+      for (const value of Object.values(file_list.value ?? {})) {
         if (value.md5 === res) {
-          // @ts-ignore
-          colorList.push(file_list.value[String(id)]['color'])
-          // @ts-ignore
-          file_list.value[String(id)]['color'] = value.color
+          colorList.push(file_list.value ? file_list.value[String(id)]['color'] : '')
+          if (file_list.value) {
+            file_list.value[String(id)]['color'] = value.color
+          }
         }
       }
-    });
-  };
-  reader.readAsText(file)
+    };
+    reader.onerror = () => {
+      if (file_list.value) {
+        file_list.value[String(id)]['md5'] = "Error!"
+      }
+    };
+    reader.readAsArrayBuffer(blob);
+  })
 }
 
 function handleClearList() {
