@@ -1,6 +1,6 @@
 # RainWarm
 
-MD5 Checker
+MD5 Checker written by tauri
 
 # License
 Do whatever you want with it!
