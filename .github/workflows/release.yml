@@ -5,7 +5,9 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
+on:
+  workflow_dispatch:
+  
 jobs:
   create-release:
     runs-on: ubuntu-latest
@@ -28,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: '${{ steps.get_version.outputs.VERSION }}'
-          release_name: 'OhMyBox ${{ steps.get_version.outputs.VERSION }}'
+          release_name: 'RainWarm ${{ steps.get_version.outputs.VERSION }}'
           body: 'See the assets to download this version and install.'
 
   build-tauri:
