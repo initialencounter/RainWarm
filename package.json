@@ -2,7 +2,7 @@
   "name": "rainwarm",
   "description": "MD5 Checker",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,8 +29,8 @@
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@types/spark-md5": "^3.0.4",
     "@tauri-apps/cli": "^1.5.8",
+    "@types/spark-md5": "^3.0.4",
     "@vitejs/plugin-vue": "^4.2.3",
     "typescript": "^5.0.2",
     "vite": "^5.0.0",

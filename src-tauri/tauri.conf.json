@@ -8,10 +8,19 @@
   },
   "package": {
     "productName": "rainwarm",
-    "version": "0.0.3"
+    "version": "0.0.4"
   },
   "tauri": {
+    "systemTray": {
+      "iconPath": "icons/32x32.png",
+      "menuOnLeftClick": true,
+      "title": "Md5 Checker",
+      "iconAsTemplate": true
+    },
     "allowlist": {
+      "shell": {
+        "open": true
+      },
       "all": true,
       "fs": {
         "all": true,
