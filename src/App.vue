@@ -135,4 +135,5 @@ function handleClearList() {
 
 <style scoped>
 @import url('./assets/css/reset.css');
+@import url('./assets/css/app.css');
 </style>
