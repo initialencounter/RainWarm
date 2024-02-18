@@ -7,6 +7,9 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.3
+    - 使用 spark-md5 在前端计算 MD5
+
 - v0.0.2
     - MD5 相同的文件会标注相同的颜色
     - ![v0.0.2 UI](./image/v0.0.2.png)
