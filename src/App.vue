@@ -105,7 +105,7 @@ function handleClearList() {
         </path>
       </svg>
     </a>
-    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.4 </p>
+    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.5 </p>
     <br>
     <div class="header">
       <div class="cell-name">名称</div>
