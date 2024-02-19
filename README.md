@@ -7,6 +7,12 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.6
+    - 新增移除文件按钮
+
+- v0.0.5
+    - 新增检查更新
+
 - v0.0.4
     - 新增系统托盘(systemTray)
 
