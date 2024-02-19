@@ -7,6 +7,9 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.4
+    - 新增系统托盘(systemTray)
+
 - v0.0.3
     - 使用 spark-md5 在前端计算 MD5
 
