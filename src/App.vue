@@ -92,6 +92,13 @@ function handleClearList() {
   colorList = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#000075', '#a9a9a9', '#ffffff', '#000000']
   file_id = 1
 }
+
+function removeItem(index:string|number) {
+  if (file_list.value) {
+    colorList.push(file_list.value[index]['color'])
+    delete file_list.value[index]
+  }
+}
 </script>
 
 <template>
@@ -108,9 +115,10 @@ function handleClearList() {
     <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.5 </p>
     <br>
     <div class="header">
-      <div class="cell-name">名称</div>
-      <div class="cell-name">修改日期</div>
-      <div class="cell-name">MD5</div>
+      <div class="cell-name-header">名称</div>
+      <div class="cell-name-header">修改日期</div>
+      <div class="cell-name-header">MD5</div>
+      <div class="cell-name-null"></div>
     </div>
     <!-- 内容区 -->
     <div class="middle-con">
@@ -120,6 +128,7 @@ function handleClearList() {
           <div class="cell-name" :style="{ background: item.color }">{{ item.name || '--' }}</div>
           <div class="cell-name lastModified" :style="{ background: item.color }">{{ item.lastModified || '--' }}</div>
           <div class="cell-name" :style="{ background: item.color }">{{ item.md5 || '--' }}</div>
+          <button class="cell-name-delete" @click="removeItem(index)">X</button>
         </li>
       </ul>
     </div>

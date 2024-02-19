@@ -58,21 +58,54 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 4px;
+    border-radius: 0px;
 }
 
 .image-items li:nth-child(even) {
     background: rgb(207, 225, 233);
 }
 
+.cell-name-header {
+    float: left;
+    padding: 3px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
 .cell-name {
     float: left;
-    padding: 2px;
+    padding: 3px;
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
+}
+.cell-name-delete {
+    float: left;
+    padding: 5px;
+    width: 15%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    background: rgba(62, 75, 90, 0.8);
+    color: #fff;
+    border-radius: 0px;
+    border: 2px isolid #ccc;
+}
+.cell-name-null {
+    float: left;
+    padding: 2px;
+    width: 30%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    color: #000;
 }
 
 .cell-down p {
