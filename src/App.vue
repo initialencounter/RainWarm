@@ -112,7 +112,7 @@ function removeItem(index:string|number) {
         </path>
       </svg>
     </a>
-    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.5 </p>
+    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.6 </p>
     <br>
     <div class="header">
       <div class="cell-name-header">名称</div>
