@@ -60,7 +60,6 @@ function displayChsFile(files: FileList) {
 }
 
 function getMd5(blob: Blob, id: number) {
-  return new Promise<string>(() => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const spark = new SparkMD5.ArrayBuffer();
@@ -84,7 +83,6 @@ function getMd5(blob: Blob, id: number) {
       }
     };
     reader.readAsArrayBuffer(blob);
-  })
 }
 
 function handleClearList() {
