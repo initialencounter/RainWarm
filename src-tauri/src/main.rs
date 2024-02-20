@@ -10,10 +10,10 @@ struct Release {
     tag_name: String,
 }
 fn main() {
-    let quit = CustomMenuItem::new("quit".to_string(), "退出(Exit)");
-    let hide = CustomMenuItem::new("hide".to_string(), "隐藏(Hide)");
-    let about = CustomMenuItem::new("about".to_string(), "关于(About)");
-    let update = CustomMenuItem::new("update".to_string(), "检查更新(Update)");
+    let quit = CustomMenuItem::new("quit".to_string(), "退出(X)");
+    let hide = CustomMenuItem::new("hide".to_string(), "隐藏(H)");
+    let about = CustomMenuItem::new("about".to_string(), "关于(A)");
+    let update = CustomMenuItem::new("update".to_string(), "检查更新(U)");
     let tray_menu = SystemTrayMenu::new()
         .add_item(update)
         .add_item(about)
