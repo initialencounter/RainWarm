@@ -85,7 +85,6 @@
         "width": 500,
         "height": 400,
         "title": "RainWarm",
-        "resizable": false,
         "fileDropEnabled": false,
         "transparent": true
       }

@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use reqwest;
+use std::thread;
+use std::time::Duration;
 use serde::Deserialize;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 use webbrowser;
@@ -44,11 +46,21 @@ fn main() {
                 }
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
+                    let _ = tauri::WindowBuilder::new(
+                        app,
+                        "local",
+                        tauri::WindowUrl::App("confirm.html".into())
+                    ).build();
+                    let window = app.get_window("local").unwrap();
                     let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
                     let lastest = get_latest_version(current_version.as_str());
-                    println!("{}",lastest);
                     if lastest != current_version {
-                        open_link(format!("https://github.com/initialencounter/RainWarm/releases/tag/{}",lastest).as_str())
+                        window.show().unwrap();
+                        thread::spawn(move|| {
+                            // 等待5秒钟
+                            thread::sleep(Duration::from_secs(5));
+                            window.hide().unwrap();
+                        });
                     }
                 }
                 _ => {}
@@ -75,20 +87,24 @@ fn open_link(url: &str) {
 fn get_latest_version(current_version: &str) -> String {
     let url = "https://api.github.com/repos/initialencounter/rainwarm/releases/latest";
     let client = reqwest::blocking::Client::new();
-    
-    let resp = match client.get(url).header(reqwest::header::USER_AGENT, "rust-app").send() {
+
+    let resp = match client
+        .get(url)
+        .header(reqwest::header::USER_AGENT, "rust-app")
+        .send()
+    {
         Ok(response) => response,
         Err(_) => return current_version.to_string(),
     };
-    
+
     if !resp.status().is_success() {
         return current_version.to_string();
     }
-    
+
     let release = match resp.json::<Release>() {
         Ok(release) => release,
         Err(_) => return current_version.to_string(),
     };
-    
+
     release.tag_name
 }
