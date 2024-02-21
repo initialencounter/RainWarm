@@ -1,20 +1,20 @@
 use reqwest;
-use webbrowser;
 use serde::Deserialize;
+use webbrowser;
 
 #[derive(Deserialize)]
 struct Release {
     tag_name: String,
 }
 
-
-fn open_link(url: &str) {
+#[tauri::command]
+pub fn open_link(url: &str) {
     if let Err(e) = webbrowser::open(&url) {
         eprintln!("Failed to open link: {}", e);
     }
 }
 
-fn get_latest_version(current_version: &str) -> String {
+pub fn get_latest_version(current_version: &str) -> String {
     let url = "https://api.github.com/repos/initialencounter/rainwarm/releases/latest";
     let client = reqwest::blocking::Client::new();
 

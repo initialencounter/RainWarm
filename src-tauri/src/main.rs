@@ -4,7 +4,7 @@ use std::thread;
 use std::time::Duration;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 mod utils;
-use utils:: {open_link, get_latest_version};
+use utils::{get_latest_version, open_link};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出(X)");
@@ -41,17 +41,36 @@ fn main() {
                 }
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
-                    let _ = tauri::WindowBuilder::new(
-                        app,
-                        "local",
-                        tauri::WindowUrl::App("confirm.html".into())
-                    ).build();
-                    let window = app.get_window("local").unwrap();
                     let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
                     let lastest = get_latest_version(current_version.as_str());
                     if lastest != current_version {
-                        window.show().unwrap();
-                        thread::spawn(move|| {
+                        let _ = tauri::WindowBuilder::new(
+                            app,
+                            "local_1",
+                            tauri::WindowUrl::App("confirm.html".into()),
+                        )
+                        .build();
+                        let window = app.get_window("local_1").unwrap();
+                        if !window.is_visible().expect("REASON") {
+                            window.show().unwrap();
+                        }
+                        thread::spawn(move || {
+                            // 等待5秒钟
+                            thread::sleep(Duration::from_secs(5));
+                            window.hide().unwrap();
+                        });
+                    } else {
+                        let _ = tauri::WindowBuilder::new(
+                            app,
+                            "local_2",
+                            tauri::WindowUrl::App("latest.html".into()),
+                        )
+                        .build();
+                        let window = app.get_window("local_2").unwrap();
+                        if !window.is_visible().expect("REASON") {
+                            window.show().unwrap();
+                        }
+                        thread::spawn(move || {
                             // 等待5秒钟
                             thread::sleep(Duration::from_secs(5));
                             window.hide().unwrap();
@@ -69,6 +88,7 @@ fn main() {
             }
             _ => {}
         })
+        .invoke_handler(tauri::generate_handler![open_link])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
