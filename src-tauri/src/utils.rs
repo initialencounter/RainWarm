@@ -41,6 +41,5 @@ pub fn check_update(current_version: &str) -> String {
         Ok(release) => release,
         Err(_) => return current_version.to_string(),
     };
-    println!("11111111111111111");
     release.tag_name
 }

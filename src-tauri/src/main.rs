@@ -26,11 +26,20 @@ fn main() {
                 size: _,
                 ..
             } => {
-                let window = app.get_window("main").unwrap();
+                let window = match app.get_window("main") {
+                    Some(a) => a,
+                    None => panic!("Unkonw"),
+                };
                 if window.is_visible().expect("REASON") {
-                    window.hide().unwrap();
+                    match window.hide() {
+                        Ok(a) => a,
+                        Err(e) => println!("{}", e.to_string()),
+                    };
                 } else {
-                    window.show().unwrap();
+                    match window.show() {
+                        Ok(a) => a,
+                        Err(e) => println!("{}", e.to_string()),
+                    };
                 }
             }
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
@@ -38,8 +47,14 @@ fn main() {
                     std::process::exit(0);
                 }
                 "hide" => {
-                    let window = app.get_window("main").unwrap();
-                    window.hide().unwrap();
+                    let window = match app.get_window("main") {
+                        Some(a) => a,
+                        None => panic!("Unkonw"),
+                    };
+                    match window.hide() {
+                        Ok(a) => a,
+                        Err(e) => println!("{}", e.to_string()),
+                    };
                 }
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
@@ -52,14 +67,23 @@ fn main() {
                             tauri::WindowUrl::App("confirm.html".into()),
                         )
                         .build();
-                        let window = app.get_window("local_1").unwrap();
+                        let window = match app.get_window("local_1") {
+                            Some(a) => a,
+                            None => panic!("Unkonw"),
+                        };
                         if !window.is_visible().expect("REASON") {
-                            window.show().unwrap();
+                            match window.show() {
+                                Ok(a) => a,
+                                Err(e) => println!("{}", e.to_string()),
+                            };
                         }
                         thread::spawn(move || {
                             // 等待5秒钟
                             thread::sleep(Duration::from_secs(5));
-                            window.hide().unwrap();
+                            match window.hide() {
+                                Ok(a) => a,
+                                Err(e) => println!("{}", e.to_string()),
+                            };
                         });
                     } else {
                         let _ = tauri::WindowBuilder::new(
@@ -68,27 +92,34 @@ fn main() {
                             tauri::WindowUrl::App("latest.html".into()),
                         )
                         .build();
-                        let window = app.get_window("local_2").unwrap();
+                        let window = match app.get_window("local_2") {
+                            Some(a) => a,
+                            None => panic!("Unkonw"),
+                        };
                         if !window.is_visible().expect("REASON") {
-                            window.show().unwrap();
+                            match window.show() {
+                                Ok(a) => a,
+                                Err(e) => println!("{}", e.to_string()),
+                            };
                         }
                         thread::spawn(move || {
                             // 等待5秒钟
                             thread::sleep(Duration::from_secs(5));
-                            window.hide().unwrap();
+                            match window.hide() {
+                                Ok(a) => a,
+                                Err(e) => println!("{}", e.to_string()),
+                            };
                         });
                     }
                 }
-                "restart" => {
-                    restart()
-                }
+                "restart" => restart(),
                 _ => {}
             },
             _ => {}
         })
         .on_window_event(|event| match event.event() {
             tauri::WindowEvent::CloseRequested { api, .. } => {
-                event.window().hide().unwrap();
+                let _ = event.window().hide();
                 api.prevent_close();
             }
             _ => {}
