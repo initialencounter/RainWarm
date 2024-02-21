@@ -3,8 +3,8 @@
 use std::thread;
 use std::time::Duration;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
-mod:utils
-use utils:: {open_link, get_latest_version}
+mod utils;
+use utils:: {open_link, get_latest_version};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出(X)");
