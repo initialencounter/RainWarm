@@ -4,15 +4,17 @@ use std::thread;
 use std::time::Duration;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 mod utils;
-use utils::{get_latest_version, open_link};
+use utils::{check_update, open_link, restart};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出(X)");
     let hide = CustomMenuItem::new("hide".to_string(), "隐藏(H)");
     let about = CustomMenuItem::new("about".to_string(), "关于(A)");
     let update = CustomMenuItem::new("update".to_string(), "检查更新(U)");
+    let restart_ = CustomMenuItem::new("restart".to_string(), "重启(R)");
     let tray_menu = SystemTrayMenu::new()
         .add_item(update)
+        .add_item(restart_)
         .add_item(about)
         .add_item(hide)
         .add_item(quit); // insert the menu items here
@@ -42,7 +44,7 @@ fn main() {
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
                     let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
-                    let lastest = get_latest_version(current_version.as_str());
+                    let lastest = check_update(current_version.as_str());
                     if lastest != current_version {
                         let _ = tauri::WindowBuilder::new(
                             app,
@@ -77,6 +79,9 @@ fn main() {
                         });
                     }
                 }
+                "restart" => {
+                    restart()
+                }
                 _ => {}
             },
             _ => {}
@@ -88,7 +93,7 @@ fn main() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![open_link])
+        .invoke_handler(tauri::generate_handler![open_link, restart])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

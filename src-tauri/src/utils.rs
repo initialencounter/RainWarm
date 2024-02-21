@@ -1,5 +1,6 @@
 use reqwest;
 use serde::Deserialize;
+use tauri;
 use webbrowser;
 
 #[derive(Deserialize)]
@@ -14,7 +15,12 @@ pub fn open_link(url: &str) {
     }
 }
 
-pub fn get_latest_version(current_version: &str) -> String {
+#[tauri::command]
+pub fn restart() {
+    tauri::api::process::restart(&tauri::Env::default())
+}
+
+pub fn check_update(current_version: &str) -> String {
     let url = "https://api.github.com/repos/initialencounter/rainwarm/releases/latest";
     let client = reqwest::blocking::Client::new();
 
@@ -35,6 +41,6 @@ pub fn get_latest_version(current_version: &str) -> String {
         Ok(release) => release,
         Err(_) => return current_version.to_string(),
     };
-
+    println!("11111111111111111");
     release.tag_name
 }
