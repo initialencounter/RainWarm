@@ -1,0 +1,13 @@
+[package]
+name = "rw"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+data-encoding = "2.5.0"
+error-chain = "0.12.4"
+fltk = "1.4.27"
+fltk-sys = "1.4.27"
+ring = "0.17.8"
