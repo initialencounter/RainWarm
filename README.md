@@ -1,6 +1,8 @@
-# RainWarm
+<div align="center">
+    
+![rainwarm](https://socialify.git.ci/initialencounter/RainWarm/image?description=1&font=Rokkitt&forks=1&issues=1&language=1&name=1&owner=1&pattern=Diagonal%20Stripes&pulls=1&stargazers=1&theme=Dark)
 
-MD5 Checker written by tauri
+</div>
 
 # License
 Do whatever you want with it!
