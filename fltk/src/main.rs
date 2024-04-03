@@ -27,7 +27,7 @@ fn main() {
             }
             Event::Paste => {
                 if dnd && released {
-                    let mut path = app::event_text();
+                    let path = app::event_text();
                     let sha256 = drag_file(&path);
                     let text = format!("{}------{}\n",path,sha256);
                     buf.append(&text);
