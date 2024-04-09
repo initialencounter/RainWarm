@@ -4,7 +4,7 @@ use std::thread;
 use std::time::Duration;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 mod utils;
-use utils::{check_update, open_link, restart};
+use utils::{check_update, open_link, restart, set_window_topmost};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "退出(X)");
@@ -123,6 +123,9 @@ fn main() {
                 api.prevent_close();
             }
             _ => {}
+        }).on_page_load(|window, _| {
+            set_window_topmost(window.clone());
+            
         })
         .invoke_handler(tauri::generate_handler![open_link, restart])
         .run(tauri::generate_context!())

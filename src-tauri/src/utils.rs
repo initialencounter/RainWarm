@@ -1,6 +1,6 @@
 use reqwest;
 use serde::Deserialize;
-use tauri;
+use tauri::{self, Window};
 use webbrowser;
 
 #[derive(Deserialize)]
@@ -42,4 +42,10 @@ pub fn check_update(current_version: &str) -> String {
         Err(_) => return current_version.to_string(),
     };
     release.tag_name
+}
+
+pub fn set_window_topmost(window: Window) {
+    window
+        .set_always_on_top(true)
+        .expect("Failed to set window as topmost");
 }
