@@ -115,7 +115,7 @@ function open_link(url: string) {
         </path>
       </svg>
     </div>
-    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.6 </p>
+    <p style="font-size: 24px"> 文件 MD5 校对器 v0.0.7 </p>
     <br>
     <div class="header">
       <div class="cell-name-header">名称</div>

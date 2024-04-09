@@ -1,5 +1,5 @@
 [package]
-version = "0.0.6"
+version = "0.0.7"
 name = "rainwarm"
 description = "MD5 Checker"
 authors = ["initialencounter <2911583893@qq.com>"]

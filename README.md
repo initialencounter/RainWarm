@@ -9,6 +9,9 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.7
+    - 窗口置于桌面顶层
+
 - v0.0.6
     - 新增移除文件按钮
 
