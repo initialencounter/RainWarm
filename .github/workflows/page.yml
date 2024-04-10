@@ -38,6 +38,9 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: build
+      
+      - name: fix resource path
+        run: sed -i "s|/src/main.ts|/RainWarn/src/main.ts|g" index.html
       # - name: MoveFile
       #   run: |
       #     mkdir docu
