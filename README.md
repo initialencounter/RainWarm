@@ -9,6 +9,10 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.8
+    - 使用 dialog API
+    - 优化布局
+
 - v0.0.7
     - 窗口置于桌面顶层
 

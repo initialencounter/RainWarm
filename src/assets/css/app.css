@@ -1,9 +1,19 @@
 .git {
     position: absolute;
-    right: 5%;
-    top: 5%;
+    height: 30px;
+    width: 30px;
+    right: 15px;
+    top: 10px;
+    background-color: #00000000;
 }
 
+.git:hover {
+    background-color: #b99a3b;
+}
+
+.cell-name-delete:hover {
+    background-color: #6a675c;
+}
 .footer {
     height: 20px;
     display: flex;
@@ -36,8 +46,8 @@
     line-height: 28px;
     margin: 0 10px;
     position: absolute;
-    bottom: 4%;
-    right: 4%;
+    bottom: -40px;
+    right: 0%;
     font-size: 14px;
     padding: 0 5px;
 }
@@ -72,7 +82,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    text-align: center;
+    text-align: left;
 }
 
 .cell-name {
@@ -120,8 +130,8 @@
     border: 2px inset #ccc;
     padding: 20px;
     text-align: center;
-    width: 485px;
-    height: 380px;
+    width: 100%;
+    height: 100%;
     position: relative;
 }
 
