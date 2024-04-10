@@ -20,7 +20,7 @@ pub fn restart() {
     tauri::api::process::restart(&tauri::Env::default())
 }
 
-pub fn check_update(current_version: &str) -> String {
+pub fn check_update(flag: String) -> String {
     let url = "https://api.github.com/repos/initialencounter/rainwarm/releases/latest";
     let client = reqwest::blocking::Client::new();
 
@@ -30,16 +30,16 @@ pub fn check_update(current_version: &str) -> String {
         .send()
     {
         Ok(response) => response,
-        Err(_) => return current_version.to_string(),
+        Err(_) => return flag,
     };
 
     if !resp.status().is_success() {
-        return current_version.to_string();
+        return flag;
     }
 
     let release = match resp.json::<Release>() {
         Ok(release) => release,
-        Err(_) => return current_version.to_string(),
+        Err(_) => return flag,
     };
     release.tag_name
 }

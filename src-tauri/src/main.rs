@@ -1,8 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use std::thread;
-use std::time::Duration;
-use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
+use tauri::{api::dialog, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 mod utils;
 use utils::{check_update, open_link, restart, set_window_topmost};
 
@@ -58,58 +56,41 @@ fn main() {
                 }
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
+                    let window = match app.get_window("main") {
+                        Some(a) => a,
+                        None => panic!("Unkonw"),
+                    };
                     let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
-                    let lastest = check_update(current_version.as_str());
-                    if lastest != current_version {
-                        let _ = tauri::WindowBuilder::new(
-                            app,
-                            "local_1",
-                            tauri::WindowUrl::App("confirm.html".into()),
-                        )
-                        .build();
-                        let window = match app.get_window("local_1") {
-                            Some(a) => a,
-                            None => panic!("Unkonw"),
-                        };
-                        if !window.is_visible().expect("REASON") {
-                            match window.show() {
-                                Ok(a) => a,
-                                Err(e) => println!("{}", e.to_string()),
-                            };
-                        }
-                        thread::spawn(move || {
-                            // 等待5秒钟
-                            thread::sleep(Duration::from_secs(5));
-                            match window.hide() {
-                                Ok(a) => a,
-                                Err(e) => println!("{}", e.to_string()),
-                            };
-                        });
+                    let lastest = check_update(String::from("000"));
+                    if lastest == "000" {
+                        dialog::ask(Some(&window), "RainWarm", "检查更新失败!", |answer| {
+                            match answer {
+                                true => (),
+                                false => (),
+                            }
+                        })
+                    } else if lastest != current_version {
+                        dialog::ask(
+                            Some(&window),
+                            "RainWarm",
+                            format!("发现新版本{}，是否前往", lastest).as_str(),
+                            |answer| match answer {
+                                true => open_link(
+                                    "https://github.com/initialencounter/RainWarm/releases/latest",
+                                ),
+                                false => (),
+                            },
+                        );
                     } else {
-                        let _ = tauri::WindowBuilder::new(
-                            app,
-                            "local_2",
-                            tauri::WindowUrl::App("latest.html".into()),
+                        dialog::ask(
+                            Some(&window),
+                            "RainWarm",
+                            format!("当前版本是最新版").as_str(),
+                            |answer| match answer {
+                                true => (),
+                                false => (),
+                            },
                         )
-                        .build();
-                        let window = match app.get_window("local_2") {
-                            Some(a) => a,
-                            None => panic!("Unkonw"),
-                        };
-                        if !window.is_visible().expect("REASON") {
-                            match window.show() {
-                                Ok(a) => a,
-                                Err(e) => println!("{}", e.to_string()),
-                            };
-                        }
-                        thread::spawn(move || {
-                            // 等待5秒钟
-                            thread::sleep(Duration::from_secs(5));
-                            match window.hide() {
-                                Ok(a) => a,
-                                Err(e) => println!("{}", e.to_string()),
-                            };
-                        });
                     }
                 }
                 "restart" => restart(),
@@ -123,9 +104,9 @@ fn main() {
                 api.prevent_close();
             }
             _ => {}
-        }).on_page_load(|window, _| {
+        })
+        .on_page_load(|window, _| {
             set_window_topmost(window.clone());
-            
         })
         .invoke_handler(tauri::generate_handler![open_link, restart])
         .run(tauri::generate_context!())
