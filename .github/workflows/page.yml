@@ -25,8 +25,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: fix resource path
-        run: ls && pwd
-        run: sed -i "s|/assets/index|/RainWarn/assets/index-|g" dist/index.html
+        run: |
+          ls && pwd
+          run: sed -i "s|/assets/index|/RainWarn/assets/index-|g" dist/index.html
       # - name: MoveFile
       #   run: |
       #     mkdir docu
