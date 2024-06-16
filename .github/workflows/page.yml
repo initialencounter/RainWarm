@@ -27,6 +27,7 @@ jobs:
       - name: fix resource path
         run: |
           ls && pwd
+          sh /home/runner/work/RainWarm/RainWarm/fix.sh /home/runner/work/RainWarm/RainWarm/dist
           sed -i "s|/assets/index|/RainWarn/assets/index|g" /home/runner/work/RainWarm/RainWarm/dist/index.html
       # - name: MoveFile
       #   run: |
