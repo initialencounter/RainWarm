@@ -7,6 +7,10 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.0.9
+    - use element-plus
+    - 去除边框
+
 - v0.0.8
     - 使用 dialog API
     - 优化布局

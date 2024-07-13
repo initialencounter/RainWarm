@@ -24,17 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: fix resource path
-        run: |
-          ls && pwd
-          sed -i "s|/assets/index|/RainWarn/assets/index|g" /home/runner/work/RainWarm/RainWarm/dist/index.html
-          sh /home/runner/work/RainWarm/RainWarm/fix.sh /home/runner/work/RainWarm/RainWarm/dist
-          cat /home/runner/work/RainWarm/RainWarm/dist/index.html
-      # - name: MoveFile
-      #   run: |
-      #     mkdir docu
-      #     mv build docu/build 
-      # https://github.com/marketplace/actions/deploy-to-github-pages
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:

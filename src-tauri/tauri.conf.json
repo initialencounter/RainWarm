@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "rainwarm",
-    "version": "0.0.8"
+    "version": "0.0.9"
   },
   "tauri": {
     "systemTray": {
@@ -29,6 +29,9 @@
         ]
       },
       "dialog": {
+        "all": true
+      },
+      "window": {
         "all": true
       }
     },
@@ -82,11 +85,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "width": 500,
+        "width": 600,
         "height": 400,
         "title": "RainWarm",
         "fileDropEnabled": false,
-        "transparent": true
+        "transparent": true,
+        "decorations": false
       }
     ]
   }

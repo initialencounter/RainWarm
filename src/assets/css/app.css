@@ -1,152 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 .git {
     position: absolute;
-    height: 30px;
-    width: 30px;
-    right: 15px;
-    top: 10px;
-    background-color: #00000000;
+    height: 40px;
+    width: 40px;
+    right: 0;
+    top: -0.2rem;
 }
-
-.git:hover {
-    background-color: #b99a3b;
-}
-
-.cell-name-delete:hover {
-    background-color: #6a675c;
-}
-.footer {
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 14px;
+.close-icon{
     position: absolute;
-    font-size: 10px;
-    bottom: 0;
-    right: 50%;
+    height: 40px;
+    width: 40px;
+    left: 0;
+    top: -0.2rem;
+    background: transparent;
 }
-
-.action-right {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-
-.action-btn {
+.close-icon:hover{
     cursor: pointer;
-    border: 1px solid #fff;
-    color: #fff;
-    display: block;
-    height: 30px;
-    border-radius: 6px;
-    text-align: center;
-    line-height: 28px;
-    margin: 0 10px;
-    position: absolute;
-    bottom: -40px;
-    right: 0%;
-    font-size: 14px;
-    padding: 0 5px;
 }
-
-.action-btn:hover {
-    color: #80b9ea;
-    border: 1px solid #80b9ea;
-}
-
-.header {
-    background: rgba(62, 75, 90, 0.8);
-    color: #fff;
-    padding: 10px;
-    width: 100%;
-    height: 30px;
-    font-size: 16px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 0px;
-}
-
-.image-items li:nth-child(even) {
-    background: rgb(207, 225, 233);
-}
-
-.cell-name-header {
-    float: left;
-    padding: 3px;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;
-}
-
-.cell-name {
-    float: left;
-    padding: 3px;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;
-}
-.cell-name-delete {
-    float: left;
-    padding: 5px;
-    width: 15%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-    background: rgba(62, 75, 90, 0.8);
-    color: #fff;
-    border-radius: 0px;
-    border: 2px isolid #ccc;
-}
-.cell-name-null {
-    float: left;
-    padding: 2px;
-    width: 30%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-    color: #000;
-}
-
-.cell-down p {
-    cursor: pointer;
-    text-decoration: none;
-    color: #5da6e4;
-    font-size: 12px;
-}
-
 .file-drop {
-    border-radius: 4px;
-    border: 2px inset #ccc;
-    padding: 20px;
+    margin: 0.1rem;
     text-align: center;
-    width: 100%;
-    height: 100%;
     position: relative;
 }
 
-.image-list {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 25px;
-    color: #77ce62;
-    font-size: 14px;
-    margin: 2px 0;
-    border-radius: 4px;
-}
-
-.lastModified {
-    font-size: 10px;
+.noSelectTitle {
+    user-select: none;
+    /* For modern browsers */
+    -webkit-user-select: none;
+    /* For Safari */
+    -moz-user-select: none;
+    /* For Firefox */
+    -ms-user-select: none;
+    /* For IE10+ */
+    text-align: center;
 }

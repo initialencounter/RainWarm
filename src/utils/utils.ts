@@ -1,4 +1,4 @@
-export function formatTimestamp(timestamp: number): string {
+function formatTimestamp(timestamp: number): string {
     const date = new Date(timestamp);
     const year = date.getFullYear().toString().slice(2);
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -14,9 +14,9 @@ export function formatTimestamp(timestamp: number): string {
  * 计算亮度, < 126 ? "#FFFFFF" : "#000000"
  * @param hex
  */
-export function calculateColorBrightness(hex: string) {
+function calculateColorBrightness(hex: string) {
     const {r, g, b} = hexToRgb(hex) || {r: 0, g: 0, b: 0}
-    return (r * 299 + g * 587 + b * 114) / 1000;
+    return (((r * 299 + g * 587 + b * 114) / 1000) < 126) ? '#FFFFFF' : '#000000';
 }
 
 /**
@@ -35,3 +35,5 @@ function hexToRgb(hex: string): { r: number, g: number, b: number } | null {
 
     return {r, g, b};
 }
+
+export {formatTimestamp, calculateColorBrightness};

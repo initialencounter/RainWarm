@@ -1,5 +1,5 @@
 [package]
-version = "0.0.8"
+version = "0.0.9"
 name = "rainwarm"
 description = "MD5 Checker"
 authors = ["initialencounter <2911583893@qq.com>"]
@@ -8,12 +8,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "system-tray", "api-all", "macos-private-api"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+tauri = { version = "1", features = [ "macos-private-api", "system-tray", "api-all"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 webbrowser = "0.8.12"
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 
