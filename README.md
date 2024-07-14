@@ -7,6 +7,9 @@ Do whatever you want with it!
 
 # ChangLog
 
+- v0.1.0
+    - 透明背景
+
 - v0.0.9
     - use element-plus
     - 去除边框

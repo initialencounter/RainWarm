@@ -4,21 +4,26 @@
 }
 .git {
     position: absolute;
-    height: 40px;
-    width: 40px;
-    right: 0;
-    top: -0.2rem;
+    height: 30px;
+    width: 30px;
+    right: 0.2rem;
+    top: 0;
+}
+.git:hover {
+    cursor: pointer;
+    opacity: 0.6;
 }
 .close-icon{
     position: absolute;
     height: 40px;
     width: 40px;
-    left: 0;
+    left: 0.3rem;
     top: -0.2rem;
     background: transparent;
 }
 .close-icon:hover{
     cursor: pointer;
+    opacity: 0.6;
 }
 .file-drop {
     margin: 0.1rem;

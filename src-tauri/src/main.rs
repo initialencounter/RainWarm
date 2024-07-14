@@ -17,6 +17,17 @@ fn main() {
         .add_item(hide)
         .add_item(quit); // insert the menu items here
     tauri::Builder::default()
+        // .setup(|app|{
+        //     let window = app.get_webview_window("main").unwrap();
+        //     #[cfg(target_os = "macos")]
+        //     apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
+        //         .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+        //
+        //     #[cfg(target_os = "windows")]
+        //     apply_blur(&window, Some((18, 18, 18, 125)))
+        //         .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
+        //     Ok(())
+        // })
         .system_tray(SystemTray::new().with_menu(tray_menu))
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::LeftClick {
@@ -26,18 +37,12 @@ fn main() {
             } => {
                 let window = match app.get_window("main") {
                     Some(a) => a,
-                    None => panic!("Unkonw"),
+                    None => panic!("Unknown"),
                 };
                 if window.is_visible().expect("REASON") {
-                    match window.hide() {
-                        Ok(a) => a,
-                        Err(e) => println!("{}", e.to_string()),
-                    };
+                    window.hide().unwrap_or_else(|e| println!("{}", e.to_string()));
                 } else {
-                    match window.show() {
-                        Ok(a) => a,
-                        Err(e) => println!("{}", e.to_string()),
-                    };
+                    window.show().unwrap_or_else(|e| println!("{}", e.to_string()));
                 }
             }
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
@@ -47,33 +52,30 @@ fn main() {
                 "hide" => {
                     let window = match app.get_window("main") {
                         Some(a) => a,
-                        None => panic!("Unkonw"),
+                        None => panic!("Unknown"),
                     };
-                    match window.hide() {
-                        Ok(a) => a,
-                        Err(e) => println!("{}", e.to_string()),
-                    };
+                    window.hide().unwrap_or_else(|e| println!("{}", e.to_string()));
                 }
                 "about" => open_link("https://github.com/initialencounter/rainwarm"),
                 "update" => {
                     let window = match app.get_window("main") {
                         Some(a) => a,
-                        None => panic!("Unkonw"),
+                        None => panic!("Unknown"),
                     };
                     let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
-                    let lastest = check_update(String::from("000"));
-                    if lastest == "000" {
+                    let latest = check_update(String::from("000"));
+                    if latest == "000" {
                         dialog::ask(Some(&window), "RainWarm", "检查更新失败!", |answer| {
                             match answer {
                                 true => (),
                                 false => (),
                             }
                         })
-                    } else if lastest != current_version {
+                    } else if latest != current_version {
                         dialog::ask(
                             Some(&window),
                             "RainWarm",
-                            format!("发现新版本{}，是否前往", lastest).as_str(),
+                            format!("发现新版本{}，是否前往", latest).as_str(),
                             |answer| match answer {
                                 true => open_link(
                                     "https://github.com/initialencounter/RainWarm/releases/latest",
@@ -85,7 +87,7 @@ fn main() {
                         dialog::ask(
                             Some(&window),
                             "RainWarm",
-                            format!("当前版本是最新版").as_str(),
+                            "当前版本是最新版".to_string().as_str(),
                             |answer| match answer {
                                 true => (),
                                 false => (),
