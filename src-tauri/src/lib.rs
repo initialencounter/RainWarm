@@ -1,3 +1,5 @@
+use std::sync::{mpsc};
+use std::{fs, thread};
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use tauri::{
     Manager,
@@ -5,11 +7,12 @@ use tauri::{
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
 };
 use tauri::tray::MouseButtonState;
+use tauri::{WindowEvent, DragDropEvent, Emitter};
 
 mod utils;
-use utils::{check_update, open_link, restart, set_window_topmost};
+use utils::{check_update, open_link, restart, set_window_topmost, calculate_blake2b512};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
-use window_vibrancy::apply_blur;
+// use window_vibrancy::apply_blur;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -37,7 +40,7 @@ pub fn run() {
                         } else {
                             window.show().unwrap();
                         }
-                    },
+                    }
                     "restart" => restart(),
                     "about" => open_link("https://github.com/initialencounter/rainwarm"),
                     "update" => {
@@ -71,6 +74,8 @@ pub fn run() {
                     }
                 })
                 .build(app).unwrap();
+            let main_window = app.get_webview_window("main").unwrap();
+            set_window_topmost(main_window);
             // #[cfg(target_os = "macos")]
             // apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
             //     .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
@@ -80,12 +85,43 @@ pub fn run() {
             //     .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
             Ok(())
         })
-        .on_page_load(|webview, _| {
-            match webview.get_webview_window("main")
-            {
-                Some(window) => set_window_topmost(window),
-                None => (),
-            };
+        .on_window_event(|window, event| match event {
+            WindowEvent::DragDrop(DragDropEvent::Drop { paths, .. }) => {
+                let app = window.app_handle();
+                let (tx, rx) = mpsc::channel();
+                for path in paths.iter() {
+                    if path.is_file() {
+                        let tx = tx.clone();
+                        let file_path = path.to_string_lossy().into_owned();
+                        thread::spawn(move || {
+                            let file_tile = calculate_blake2b512(file_path);
+                            tx.send(file_tile).unwrap();
+                        });
+                    }else {
+                        match fs::read_dir(&path) {
+                            Ok(entries) => {
+                                entries.for_each(|entry| {
+                                    let file_path = entry.unwrap().path().to_string_lossy().into_owned();
+                                    let tx = tx.clone();
+                                    thread::spawn(move || {
+                                        let file_tile = calculate_blake2b512(file_path);
+                                        tx.send(file_tile).unwrap();
+                                    });
+                                });
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+                // 接收计算结果并发射事件
+                let app = app.clone();
+                thread::spawn(move || {
+                    for file_tile in rx {
+                        app.emit("file_tile", Some(&file_tile)).unwrap();
+                    }
+                });
+            }
+            _ => {}
         })
         .invoke_handler(tauri::generate_handler![open_link, restart])
         .run(tauri::generate_context!())

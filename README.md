@@ -6,6 +6,10 @@
 Do whatever you want with it!
 
 # ChangLog
+- v0.2.0
+    - 迁移到 v2
+    - 桌面段使用 blake2b 代替 md5
+    - 多线程计算 blake2b
 
 - v0.1.0
     - 透明背景

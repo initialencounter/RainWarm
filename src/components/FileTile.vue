@@ -73,12 +73,12 @@ function removeItem(index: number) {
 .lastModified{
   text-indent: 0.5em;
   position: absolute;
-  left: 30%;
+  left: 62%;
 }
 .tile-md5 {
   text-indent: 0.5em;
   position: absolute;
-  left: 64%;
+  left: 84%;
   width: 10%;
 }
 .tile-black-line {

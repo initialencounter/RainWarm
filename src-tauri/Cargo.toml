@@ -1,5 +1,5 @@
 [package]
-version = "0.1.0"
+version = "0.2.0"
 name = "rainwarm"
 description = "MD5 Checker"
 authors = ["initialencounter <2911583893@qq.com>"]
@@ -24,4 +24,6 @@ serde_json = "1.0.120"
 webbrowser = "1.0.1"
 reqwest = { version = "0.12.5", features = ["blocking", "json"] }
 window-vibrancy = "0.5.0"
-
+blake2 = "0.11.0-pre.3"
+hex = "0.4.3"
+chrono = "0.4.38"
