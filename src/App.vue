@@ -9,7 +9,8 @@ import {FileTileMap} from "./types";
 import FileTile from "./components/FileTile.vue";
 import {ElNotification} from "element-plus";
 import {CloseBold} from "@element-plus/icons";
-import { appWindow } from '@tauri-apps/api/window';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+const appWindow = getCurrentWebviewWindow()
 
 // forked from https://www.zhihu.com/question/26744174/answer/2468892079
 let colorList = ['#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#000075', '#a9a9a9', '#ffffff', '#e6194B', '#000000']
@@ -96,8 +97,8 @@ document.ondragenter = dragenterEvent
 document.ondragleave = dragleaveEvent
 document.ondrop = dropEvent
 
-async function handleHide(){
-  await appWindow.hide()
+function handleHide(){
+  appWindow.hide()
 }
 
 </script>

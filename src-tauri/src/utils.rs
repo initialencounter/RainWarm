@@ -1,6 +1,6 @@
 use reqwest;
 use serde::Deserialize;
-use tauri::{self, Window};
+use tauri::{self, WebviewWindow};
 use webbrowser;
 
 #[derive(Deserialize)]
@@ -17,7 +17,7 @@ pub fn open_link(url: &str) {
 
 #[tauri::command]
 pub fn restart() {
-    tauri::api::process::restart(&tauri::Env::default())
+    tauri::process::restart(&tauri::Env::default())
 }
 
 pub fn check_update(flag: String) -> String {
@@ -44,7 +44,7 @@ pub fn check_update(flag: String) -> String {
     release.tag_name
 }
 
-pub fn set_window_topmost(window: Window) {
+pub fn set_window_topmost(window: WebviewWindow) {
     window
         .set_always_on_top(true)
         .expect("Failed to set window as topmost");
