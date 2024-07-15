@@ -49,11 +49,15 @@ pub fn check_update(flag: String) -> String {
     release.tag_name
 }
 
-pub fn set_window_topmost(window: WebviewWindow) {
-    window
-        .set_always_on_top(true)
-        .expect("Failed to set window as topmost");
+pub fn hide_or_show(window: WebviewWindow) {
+    if window.is_visible().unwrap() {
+        window.hide().unwrap();
+    } else {
+        window.set_always_on_top(true).expect("Failed to set window as topmost");
+        window.show().unwrap();
+    }
 }
+
 #[derive(Serialize)]
 pub struct FileTile {
     blake2b512: String,

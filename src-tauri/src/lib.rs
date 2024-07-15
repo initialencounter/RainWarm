@@ -10,8 +10,9 @@ use tauri::tray::MouseButtonState;
 use tauri::{WindowEvent, DragDropEvent, Emitter};
 
 mod utils;
-use utils::{check_update, open_link, restart, set_window_topmost, calculate_blake2b512};
+use utils::{check_update, open_link, restart, calculate_blake2b512};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
+use crate::utils::hide_or_show;
 // use window_vibrancy::apply_blur;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -35,11 +36,7 @@ pub fn run() {
                     "quit" => app.exit(0),
                     "hide" => {
                         let window = app.get_webview_window("main").unwrap();
-                        if window.is_visible().unwrap() {
-                            window.hide().unwrap();
-                        } else {
-                            window.show().unwrap();
-                        }
+                        hide_or_show(window);
                     }
                     "restart" => restart(),
                     "about" => open_link("https://github.com/initialencounter/rainwarm"),
@@ -68,14 +65,13 @@ pub fn run() {
                     {
                         let app = tray.app_handle();
                         if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
+                            hide_or_show(window);
                         }
                     }
                 })
                 .build(app).unwrap();
-            let main_window = app.get_webview_window("main").unwrap();
-            set_window_topmost(main_window);
+            app.get_webview_window("main").unwrap().set_always_on_top(true).expect("Failed to set window as topmost");
+            ;
             // #[cfg(target_os = "macos")]
             // apply_vibrancy(&window, NSVisualEffectMaterial::HudWindow, None, None)
             //     .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
@@ -97,7 +93,7 @@ pub fn run() {
                             let file_tile = calculate_blake2b512(file_path);
                             tx.send(file_tile).unwrap();
                         });
-                    }else {
+                    } else {
                         match fs::read_dir(&path) {
                             Ok(entries) => {
                                 entries.for_each(|entry| {
