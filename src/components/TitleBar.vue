@@ -57,7 +57,7 @@ if (is_tauri) {
                 class="demo-rich-content__mention"
                 style="margin: 0; font-size: 14px; color: var(--el-color-info)"
             >
-              Blake2-b512 Checker written by tauri
+              Blake2 Checker written by tauri
             </p>
           </div>
         </div>

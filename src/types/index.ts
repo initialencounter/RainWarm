@@ -5,8 +5,11 @@ interface FileTile {
     name: string;
     lastModified: string;
     md5: string;
+    path: string;
     color: string;
 }
 
-
-export type {FileTileMap, FileTile}
+interface Link {
+    link: string;
+}
+export type {FileTileMap, FileTile, Link}

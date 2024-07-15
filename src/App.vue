@@ -5,36 +5,43 @@ import {ref} from "vue";
 import SparkMD5 from 'spark-md5';
 import {formatTimestamp} from './utils/utils'
 import {dragenterEvent, dragleaveEvent, dragoverEvent} from './utils/drag'
-import {FileTileMap} from "./types";
-import FileTile from "./components/FileTile.vue";
+import {FileTileMap, Link} from "./types";
+import FileTileWeb from "./components/FileTileWeb.vue";
+import FileTileTauri from "./components/FileTileTauri.vue";
 import {ElMessage} from "element-plus";
 import { isTauri } from '@tauri-apps/api/core';
 import { listen,Event } from '@tauri-apps/api/event';
-import {getCurrentWebviewWindow, WebviewWindow} from '@tauri-apps/api/webviewWindow';
 import TitleBar from "./components/TitleBar.vue";
 
 interface FileTileData {
+  name: string,
   blake2b512: string,
   last_modified: string,
   path: string,
   color?: string
 }
+let is_tauri = isTauri()
 
 // forked from https://www.zhihu.com/question/26744174/answer/2468892079
 let colorList = ['#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#000075', '#a9a9a9', '#ffffff', '#e6194B', '#000000']
 let colorIndex = 0
 const file_list = ref<FileTileMap>([{
   name: "名称",
-  lastModified: "修改日期",
-  md5: "MD5",
-  color: "rgb(25,25,25)"
+  lastModified: is_tauri?"路径":"修改日期",
+  md5: is_tauri?"BLAKE2":"MD5",
+  color: "rgb(25,25,25)",
+  path: "路径"
 }]);
-if (isTauri()) {
+
+if (is_tauri) {
+  listen('open_link', (data: Event<Link>): void => {
+    window.open(data.payload.link)
+  })
   listen('file_tile', (data: Event<FileTileData>): void => {
     let msg:FileTileData = data.payload
     for (let i = 0; i < file_list.value.length; i++) {
       let value = file_list.value[i]
-      if (value.md5 === msg.blake2b512.slice(0, 8)) {
+      if (value.md5 === msg.blake2b512) {
         msg.color = value.color
         break
       }
@@ -50,9 +57,10 @@ if (isTauri()) {
       }
     }
     file_list.value.push({
-      name: msg.path,
+      name: msg.name,
+      path: msg.path,
       lastModified: msg.last_modified,
-      md5: msg.blake2b512.slice(0, 8),
+      md5: msg.blake2b512,
       color: msg.color
     })
   })
@@ -80,7 +88,8 @@ function displayChsFile(files: FileList) {
         name: file.name,
         lastModified: formatTimestamp(file.lastModified),
         md5: 'loading...',
-        color: "#000"
+        color: "#000",
+        path: "--"
       })
     }
   }
@@ -91,7 +100,7 @@ function getMd5(blob: Blob, id: number) {
   reader.onloadend = () => {
     const spark = new SparkMD5.ArrayBuffer();
     spark.append(reader.result as ArrayBuffer);
-    const res = spark.end().slice(0, 16);
+    const res = spark.end();
     if (file_list.value[id]) {
       file_list.value[id]['md5'] = res
     }
@@ -128,9 +137,10 @@ document.oncontextmenu = function () {
 function handleClearList() {
   file_list.value = [{
     name: "名称",
-    lastModified: "修改日期",
-    md5: "MD5",
-    color: "#000000"
+    lastModified: is_tauri?"路径":"修改日期",
+    md5: is_tauri?"BLAKE2":"MD5",
+    color: "rgb(25,25,25)",
+    path: "路径"
   }]
   colorIndex = 0
 }
@@ -142,7 +152,8 @@ function handleClearList() {
     <h1 class="noSelectTitle" data-tauri-drag-region style="font-size: 24px"> 文件 MD5 校对器 v0.2.1 </h1>
     <!-- 内容区 -->
     <div class="middle-con">
-      <FileTile v-model="file_list" @removeItem="handleClearList"></FileTile>
+      <FileTileWeb v-if="!is_tauri" v-model="file_list" @removeItem="handleClearList"></FileTileWeb>
+      <FileTileTauri v-if="is_tauri" v-model="file_list" @removeItem="handleClearList"></FileTileTauri>
     </div>
 </template>
 

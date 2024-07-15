@@ -2,14 +2,12 @@
 
 ![rainwarm](https://socialify.git.ci/initialencounter/RainWarm/image?description=1&font=Rokkitt&forks=1&issues=1&language=1&name=1&owner=1&pattern=Diagonal%20Stripes&pulls=1&stargazers=1&theme=Dark)
 
-# License
-Do whatever you want with it!
 
 # ChangLog
 - v0.2.0
     - 迁移到 v2
-    - 桌面段使用 blake2b 代替 md5
-    - 多线程计算 blake2b
+    - 桌面段使用 blake2 代替 md5
+    - 多线程计算 blake2
 
 - v0.1.0
     - 透明背景

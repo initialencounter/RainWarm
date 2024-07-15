@@ -36,7 +36,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "longDescription": "Blake2-b512 Checker written by tauri",
+    "longDescription": "Blake2 Checker written by tauri",
     "targets": "all",
     "windows": {
       "wix": {

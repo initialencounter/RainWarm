@@ -1,23 +1,18 @@
+use std::fs;
 use reqwest;
 use serde::{Deserialize, Serialize};
 use tauri::{self, WebviewWindow};
-use webbrowser;
 use blake2::{Blake2b512, Digest};
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::time::{SystemTime};
 use chrono::{DateTime, Local};
+use std::path::Path;
+use std::sync::mpsc;
 
 #[derive(Deserialize)]
 struct Release {
     tag_name: String,
-}
-
-#[tauri::command]
-pub fn open_link(url: &str) {
-    if let Err(e) = webbrowser::open(&url) {
-        eprintln!("Failed to open link: {}", e);
-    }
 }
 
 #[tauri::command]
@@ -60,9 +55,10 @@ pub fn hide_or_show(window: WebviewWindow) {
 
 #[derive(Serialize)]
 pub struct FileTile {
+    name: String,
+    path: String,
     blake2b512: String,
     last_modified: String,
-    path: String,
 }
 
 fn system_time_to_date_time(time: SystemTime) -> String {
@@ -75,6 +71,17 @@ fn system_time_to_date_time(time: SystemTime) -> String {
 pub fn calculate_blake2b512(path: String) -> FileTile {
     let file = File::open(&path);
     let blank = String::from("--");
+    let os_path = Path::new(&path);
+    if os_path.is_dir() {
+        return FileTile {
+            name: String::from("--"),
+            blake2b512: String::from("--"),
+            last_modified: String::from("--"),
+            path,
+        };
+    }
+    let file_name = Path::new(&path).file_name().unwrap().to_string_lossy().into_owned();
+    let file_parent = Path::new(&path).parent().unwrap().to_string_lossy().into_owned();
     return match file {
         Ok(file) => {
             let last_modified = match file.metadata() {
@@ -95,17 +102,38 @@ pub fn calculate_blake2b512(path: String) -> FileTile {
                 hasher.update(&buffer[..n]);
             }
             FileTile {
+                name: file_name,
                 blake2b512: hex::encode(hasher.finalize()),
                 last_modified,
-                path,
+                path: file_parent,
             }
         }
         Err(_) => {
             FileTile {
+                name: file_name,
                 blake2b512: blank,
                 last_modified: String::from("--"),
-                path,
+                path: file_parent,
             }
         }
     };
+}
+
+pub fn handle_file(path: String, tx: mpsc::Sender<FileTile>) {
+    let file_tile = calculate_blake2b512(path.to_string());
+    tx.send(file_tile).unwrap();
+}
+
+pub fn handle_directory(path: String, tx: mpsc::Sender<FileTile>) {
+    match fs::read_dir(path) {
+        Ok(entries) => {
+            for entry in entries {
+                if let Ok(entry) = entry {
+                    let file_path = entry.path().to_string_lossy().into_owned();
+                    handle_file(file_path, tx.clone());
+                }
+            }
+        }
+        Err(e) => eprintln!("Failed to read directory: {}", e),
+    }
 }

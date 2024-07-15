@@ -1,5 +1,7 @@
 use std::sync::{mpsc};
 use std::{fs, thread};
+use std::path::PathBuf;
+use serde::Serialize;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use tauri::{
     Manager,
@@ -10,10 +12,13 @@ use tauri::tray::MouseButtonState;
 use tauri::{WindowEvent, DragDropEvent, Emitter};
 
 mod utils;
-use utils::{check_update, open_link, restart, calculate_blake2b512};
+use utils::{check_update, restart, calculate_blake2b512};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
-use crate::utils::hide_or_show;
-
+use crate::utils::{handle_directory, handle_file, hide_or_show};
+#[derive(Serialize, Clone)]
+struct Link {
+    link: String
+}
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -38,7 +43,7 @@ pub fn run() {
                         hide_or_show(window);
                     }
                     "restart" => restart(),
-                    "about" => open_link("https://github.com/initialencounter/rainwarm"),
+                    "about" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/rainwarm".to_string() })).unwrap(),
                     "update" => {
                         let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
                         let latest = check_update(String::from("000"));
@@ -46,9 +51,7 @@ pub fn run() {
                             app.dialog().message("检查更新失败!").kind(MessageDialogKind::Error).show(|_| {});
                         } else if latest != current_version {
                             app.dialog().message(format!("发现新版本{}，是否前往", latest)).kind(MessageDialogKind::Info).show(|_| {});
-                            open_link(
-                                "https://github.com/initialencounter/RainWarm/releases/latest",
-                            )
+                            app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/RainWarm/releases/latest".to_string() })).unwrap();
                         } else {
                             app.dialog().message("当前版本是最新版").kind(MessageDialogKind::Info).show(|_| {});
                         }
@@ -76,41 +79,32 @@ pub fn run() {
             WindowEvent::DragDrop(DragDropEvent::Drop { paths, .. }) => {
                 let app = window.app_handle();
                 let (tx, rx) = mpsc::channel();
-                for path in paths.iter() {
-                    if path.is_file() {
+
+                // 启动一个线程处理拖拽的文件或目录
+                let paths = paths.clone();
+                thread::spawn(move || {
+                    for path in paths {
                         let tx = tx.clone();
-                        let file_path = path.to_string_lossy().into_owned();
-                        thread::spawn(move || {
-                            let file_tile = calculate_blake2b512(file_path);
-                            tx.send(file_tile).unwrap();
-                        });
-                    } else {
-                        match fs::read_dir(&path) {
-                            Ok(entries) => {
-                                entries.for_each(|entry| {
-                                    let file_path = entry.unwrap().path().to_string_lossy().into_owned();
-                                    let tx = tx.clone();
-                                    thread::spawn(move || {
-                                        let file_tile = calculate_blake2b512(file_path);
-                                        tx.send(file_tile).unwrap();
-                                    });
-                                });
-                            }
-                            _ => {}
+                        let path_str = path.to_string_lossy().into_owned();
+                        if path.is_file() {
+                            handle_file(path_str, tx);
+                        } else {
+                            handle_directory(path_str, tx);
                         }
                     }
-                }
-                // 接收计算结果并发射事件
-                let app = app.clone();
+                });
+
+                // 启动另一个线程接收和发送文件信息
+                let app_clone = app.clone();
                 thread::spawn(move || {
                     for file_tile in rx {
-                        app.emit("file_tile", Some(&file_tile)).unwrap();
+                        app_clone.emit("file_tile", Some(&file_tile)).unwrap();
                     }
                 });
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![open_link, restart])
+        .invoke_handler(tauri::generate_handler![restart])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
