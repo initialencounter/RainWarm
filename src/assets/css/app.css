@@ -2,23 +2,13 @@
     margin: 0;
     padding: 0;
 }
-.git {
-    position: absolute;
-    height: 30px;
-    width: 30px;
-    right: 0.2rem;
-    top: 0;
-}
-.git:hover {
-    cursor: pointer;
-    opacity: 0.6;
-}
+
 .close-icon{
     position: absolute;
     height: 40px;
     width: 40px;
-    left: 0.3rem;
-    top: -0.2rem;
+    right: 0.5rem;
+    top: 0;
     background: transparent;
 }
 .close-icon:hover{
