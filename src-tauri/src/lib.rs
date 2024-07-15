@@ -1,6 +1,5 @@
 use std::sync::{mpsc};
-use std::{fs, thread};
-use std::path::PathBuf;
+use std::{thread};
 use serde::Serialize;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use tauri::{
@@ -12,7 +11,7 @@ use tauri::tray::MouseButtonState;
 use tauri::{WindowEvent, DragDropEvent, Emitter};
 
 mod utils;
-use utils::{check_update, restart, calculate_blake2b512};
+use utils::{check_update, restart};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 use crate::utils::{handle_directory, handle_file, hide_or_show};
 #[derive(Serialize, Clone)]
