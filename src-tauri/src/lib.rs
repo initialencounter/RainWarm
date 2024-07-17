@@ -1,41 +1,44 @@
-use std::sync::{mpsc};
-use std::{thread};
 use serde::Serialize;
+use std::sync::mpsc;
+use std::thread;
+use tauri::tray::MouseButtonState;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use tauri::{
-    Manager,
     menu::{MenuBuilder, MenuItemBuilder},
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
+    Manager,
 };
-use tauri::tray::MouseButtonState;
-use tauri::{WindowEvent, DragDropEvent, Emitter};
+use tauri::{DragDropEvent, Emitter, WindowEvent};
 
 mod utils;
-use utils::{check_update, restart};
+use crate::utils::{handle_directory, handle_file, hide_or_show, open_local_dir, open_with_wps};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
-use crate::utils::{handle_directory, handle_file, hide_or_show};
+use utils::{check_update, restart, show_page};
 #[derive(Serialize, Clone)]
 struct Link {
-    link: String
+    link: String,
 }
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
+            let help_ = MenuItemBuilder::new("帮助(H)").id("help").build(app).unwrap();
             let quit = MenuItemBuilder::new("退出(X)").id("quit").build(app).unwrap();
             let hide = MenuItemBuilder::new("隐藏(H)").id("hide").build(app).unwrap();
             let about = MenuItemBuilder::new("关于(A)").id("about").build(app).unwrap();
             let update = MenuItemBuilder::new("检查更新(U)").id("update").build(app).unwrap();
             let restart_ = MenuItemBuilder::new("重启(R)").id("restart").build(app).unwrap();
             let tray_menu = MenuBuilder::new(app)
-                .items(&[&update, &restart_, &about, &hide, &quit]) // insert the menu items here
+                .items(&[&help_, &update, &restart_, &about, &hide, &quit]) // insert the menu items here
                 .build()
                 .unwrap();
             let _ = TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&tray_menu)
                 .on_menu_event(|app, event| match event.id().as_ref() {
+                    "help" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/RainWarm?tab=readme-ov-file#使用帮助".to_string() })).unwrap(),
                     "quit" => app.exit(0),
                     "hide" => {
                         let window = app.get_webview_window("main").unwrap();
@@ -103,7 +106,7 @@ pub fn run() {
             }
             _ => {}
         })
-        .invoke_handler(tauri::generate_handler![restart])
+        .invoke_handler(tauri::generate_handler![restart,open_local_dir,open_with_wps,show_page])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

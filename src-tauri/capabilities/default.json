@@ -9,6 +9,7 @@
     "path:default",
     "event:default",
     "window:allow-hide",
+    "window:allow-show",
     "window:allow-minimize",
     "window:allow-set-focus",
     "window:allow-start-dragging",
@@ -17,6 +18,10 @@
     "resources:default",
     "menu:default",
     "tray:default",
-    "shell:allow-open"
+    "global-shortcut:allow-is-registered",
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "shell:allow-open",
+    "global-shortcut:default"
   ]
 }

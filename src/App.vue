@@ -6,8 +6,7 @@ import SparkMD5 from 'spark-md5';
 import {formatTimestamp} from './utils/utils'
 import {dragenterEvent, dragleaveEvent, dragoverEvent} from './utils/drag'
 import {FileTileMap, Link} from "./types";
-import FileTileWeb from "./components/FileTileWeb.vue";
-import FileTileTauri from "./components/FileTileTauri.vue";
+import FileTileTauri from "./components/FileTile.vue";
 import {ElMessage} from "element-plus";
 import { isTauri } from '@tauri-apps/api/core';
 import { listen,Event } from '@tauri-apps/api/event';
@@ -19,19 +18,14 @@ interface FileTileData {
   last_modified: string,
   path: string,
   color?: string
+  focus?: boolean
 }
 let is_tauri = isTauri()
 
 // forked from https://www.zhihu.com/question/26744174/answer/2468892079
 let colorList = ['#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#000075', '#a9a9a9', '#ffffff', '#e6194B', '#000000']
 let colorIndex = 0
-const file_list = ref<FileTileMap>([{
-  name: "名称",
-  lastModified: is_tauri?"路径":"修改日期",
-  md5: is_tauri?"BLAKE2":"MD5",
-  color: "rgb(25,25,25)",
-  path: "路径"
-}]);
+const file_list = ref<FileTileMap>([]);
 
 if (is_tauri) {
   listen('open_link', (data: Event<Link>): void => {
@@ -61,7 +55,8 @@ if (is_tauri) {
       path: msg.path,
       lastModified: msg.last_modified,
       md5: msg.blake2b512,
-      color: msg.color
+      color: msg.color,
+      focus: false
     })
   })
 } else {
@@ -89,7 +84,8 @@ function displayChsFile(files: FileList) {
         lastModified: formatTimestamp(file.lastModified),
         md5: 'loading...',
         color: "#000",
-        path: "--"
+        path: "--",
+        focus: false
       })
     }
   }
@@ -135,13 +131,7 @@ document.oncontextmenu = function () {
 }
 
 function handleClearList() {
-  file_list.value = [{
-    name: "名称",
-    lastModified: is_tauri?"路径":"修改日期",
-    md5: is_tauri?"BLAKE2":"MD5",
-    color: "rgb(25,25,25)",
-    path: "路径"
-  }]
+  file_list.value = []
   colorIndex = 0
 }
 </script>
@@ -149,11 +139,10 @@ function handleClearList() {
 <template>
     <!-- 头部 -->
     <TitleBar link="https://github.com/initialencounter/rainwarm" avatar="https://avatars.githubusercontent.com/u/109729945"></TitleBar>
-    <h1 class="noSelectTitle" data-tauri-drag-region style="font-size: 24px"> 文件 MD5 校对器 v0.2.1 </h1>
+    <h1 class="noSelectTitle" data-tauri-drag-region style="font-size: 24px">{{ is_tauri?'BLAKE2':'MD5' }} 校对器 v0.2.2 </h1>
     <!-- 内容区 -->
     <div class="middle-con">
-      <FileTileWeb v-if="!is_tauri" v-model="file_list" @removeItem="handleClearList"></FileTileWeb>
-      <FileTileTauri v-if="is_tauri" v-model="file_list" @removeItem="handleClearList"></FileTileTauri>
+      <FileTileTauri  v-model="file_list" @removeItem="handleClearList"></FileTileTauri>
     </div>
 </template>
 

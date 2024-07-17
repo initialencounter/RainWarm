@@ -7,6 +7,7 @@ interface FileTile {
     md5: string;
     path: string;
     color: string;
+    focus: boolean;
 }
 
 interface Link {

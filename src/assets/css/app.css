@@ -1,6 +1,15 @@
 * {
     margin: 0;
     padding: 0;
+    user-select: none;
+    /* For modern browsers */
+    -webkit-user-select: none;
+    /* For Safari */
+    -moz-user-select: none;
+    /* For Firefox */
+    -ms-user-select: none;
+    /* For IE10+ */
+    text-align: center;
 }
 
 .close-icon{
