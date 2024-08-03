@@ -1,5 +1,5 @@
 [package]
-version = "0.2.3"
+version = "0.2.4"
 name = "rainwarm"
 description = "Blake2 Checker"
 authors = ["initialencounter <2911583893@qq.com>"]

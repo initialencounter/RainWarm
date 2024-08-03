@@ -127,7 +127,7 @@ function open_with_wps(dirName: string, fileName: string) {
     <el-table-column :width="NAME_WIDTH" label="名称">
       <template #default="scope">
         <div :style="{ opacity: (scope.row.focus? '0.4': '1')}" class="tile-text">
-          <div class="tile-name" @click="focusItem(scope.$index)">
+          <div class="tile-name" @click="focusItem(scope.$index)" @dblclick="open_with_wps(scope.row.path, scope.row.name)">
             {{ scope.row.name ?? '&#45;&#45;' }}
           </div>
           <div class="tile-copy" @click="copyText(scope.row.name)">
@@ -138,7 +138,7 @@ function open_with_wps(dirName: string, fileName: string) {
     </el-table-column>
     <el-table-column :label=PATH_OR_LAST_MODIFIED>
       <template #default="scope">
-        <div :style="{ opacity: (scope.row.focus? '0.6': '1')}" class="tile-text">
+        <div :style="{ opacity: (scope.row.focus? '0.6': '1')}" class="tile-text" @dblclick="openDir(scope.row.path)">
           <div class="filePath" @click="focusItem(scope.$index)">
             {{ scope.row[PATH_OR_LAST_MODIFIED_ATTR] ?? '--' }}
           </div>

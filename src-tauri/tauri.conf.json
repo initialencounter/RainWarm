@@ -1,6 +1,6 @@
 {
   "productName": "rainwarm",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "identifier": "com.initialencounter.rainwarm",
   "build": {
     "beforeDevCommand": "yarn dev",
