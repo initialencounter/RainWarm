@@ -1,5 +1,5 @@
 [package]
-version = "0.2.2"
+version = "0.2.3"
 name = "rainwarm"
 description = "Blake2 Checker"
 authors = ["initialencounter <2911583893@qq.com>"]
@@ -12,13 +12,13 @@ name = "rainwarm_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-beta", features = [] }
+tauri-build = { version = "2.0.0-rc.0", features = [] }
 
 
 [dependencies]
-tauri = { version = "2.0.0-beta", features = [ "macos-private-api", "tray-icon"] }
-tauri-plugin-shell = "2.0.0-beta"
-tauri-plugin-dialog = "2.0.0-beta.11"
+tauri = { version = "2.0.0-rc.0", features = [ "macos-private-api", "tray-icon"] }
+tauri-plugin-shell = "2.0.0-rc.0"
+tauri-plugin-dialog = "2.0.0-rc.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1.0.120"
 reqwest = { version = "0.12.5", features = ["blocking", "json"] }
@@ -27,4 +27,4 @@ hex = "0.4.3"
 chrono = "0.4.38"
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-global-shortcut = "2.0.0-beta.8"
+tauri-plugin-global-shortcut = "2.0.0-rc"

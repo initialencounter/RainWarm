@@ -139,7 +139,7 @@ function handleClearList() {
 <template>
     <!-- 头部 -->
     <TitleBar link="https://github.com/initialencounter/rainwarm" avatar="https://avatars.githubusercontent.com/u/109729945"></TitleBar>
-    <h1 class="noSelectTitle" data-tauri-drag-region style="font-size: 24px">{{ is_tauri?'BLAKE2':'MD5' }} 校对器 v0.2.2 </h1>
+    <h1 class="noSelectTitle" data-tauri-drag-region style="font-size: 24px">{{ is_tauri?'BLAKE2':'MD5' }} 校对器 v0.2.3 </h1>
     <!-- 内容区 -->
     <div class="middle-con">
       <FileTileTauri  v-model="file_list" @removeItem="handleClearList"></FileTileTauri>

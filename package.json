@@ -2,7 +2,7 @@
   "name": "rainwarm",
   "description": "MD5 Checker",
   "private": true,
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "scripts": {
     "set-proxy": "npm config set registry https://registry.npmmirror.com",
@@ -28,15 +28,15 @@
   "homepage": "https://github.com/initialencounter/rainwarm#README",
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
-    "@tauri-apps/api": ">=2.0.0-beta.0",
-    "@tauri-apps/plugin-global-shortcut": "^2.0.0-beta.7",
-    "@tauri-apps/plugin-shell": ">=2.0.0-beta.0",
+    "@tauri-apps/api": ">=2.0.0-rc.0",
+    "@tauri-apps/plugin-global-shortcut": "^2.0.0-rc.0",
+    "@tauri-apps/plugin-shell": ">=2.0.0-rc.0",
     "element-plus": "^2.7.7",
     "spark-md5": "^3.0.2",
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@tauri-apps/cli": ">=2.0.0-beta.0",
+    "@tauri-apps/cli": "^2.0.0-rc.0",
     "@types/node": "^20.11.19",
     "@types/spark-md5": "^3.0.4",
     "@vitejs/plugin-vue": "^5.0.5",

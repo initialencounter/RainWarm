@@ -32,6 +32,10 @@
 <details>
 <summary>点我查看更新日志</summary>
 
+- v0.2.3
+  - 
+  - 升级 `tauri` 到 `v2.0.0-rc`
+
 - v0.2.2
   - 
   - 桌面端使用 `el-table`
