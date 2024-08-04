@@ -31,13 +31,8 @@
 }
 
 .noSelectTitle {
-    user-select: none;
-    /* For modern browsers */
-    -webkit-user-select: none;
-    /* For Safari */
-    -moz-user-select: none;
-    /* For Firefox */
-    -ms-user-select: none;
-    /* For IE10+ */
-    text-align: center;
+    position: absolute;
+    left: 15%;
+    top: 3.5%;
+    color: cadetblue;
 }

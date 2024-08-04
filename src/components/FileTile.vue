@@ -5,7 +5,6 @@ import {ElMessage} from "element-plus";
 import {invoke, isTauri} from "@tauri-apps/api/core";
 import Clip from "../assets/svg/Clip.vue";
 import {register} from '@tauri-apps/plugin-global-shortcut';
-import {Delete} from "@element-plus/icons";
 
 let is_tauri = isTauri()
 const PATH_OR_LAST_MODIFIED = is_tauri ? '路径' : '修改日期'
@@ -111,17 +110,13 @@ function open_with_wps(dirName: string, fileName: string) {
 </script>
 
 <template>
-  <el-icon class="tile-delete-all" @click="removeItem(-1)">
-    <Delete/>
-  </el-icon>
-  <el-table :cell-style="{fontSize: '12px', padding: '4px', border: '1px solid #515151'}" :data="file_list"
-            :header-cell-style="{color: '#ffffff',fontSize: '16px', fontWeight: 600, backgroundColor: 'rgb(68,39,120)',border: '1px solid #515151'}"
+  <el-table :cell-style="{fontSize: '14px', padding: '1px', border: '1px solid #515151'}" :data="file_list"
+            :header-cell-style="{color: '#333333',fontSize: '18px', fontWeight: 700, background: '#0091ea', border: '1px solid #515151'}"
             :row-style="rowStyle"
-            border
             class="tile-container"
-
             empty-text="右键系统托盘图标，查看使用帮助！！"
-            style="width: 100%"
+            style="width: 94%; left: 3%; top: 13%; position: absolute; z-index: 1000;"
+            border
             @header-click="handleHeaderClick"
   >
     <el-table-column :width="NAME_WIDTH" label="名称">
@@ -138,7 +133,7 @@ function open_with_wps(dirName: string, fileName: string) {
     </el-table-column>
     <el-table-column :label=PATH_OR_LAST_MODIFIED>
       <template #default="scope">
-        <div :style="{ opacity: (scope.row.focus? '0.6': '1')}" class="tile-text" @dblclick="openDir(scope.row.path)">
+        <div :style="{ opacity: (scope.row.focus? '0.4': '1')}" class="tile-text" @dblclick="openDir(scope.row.path)">
           <div class="filePath" @click="focusItem(scope.$index)">
             {{ scope.row[PATH_OR_LAST_MODIFIED_ATTR] ?? '--' }}
           </div>
@@ -148,15 +143,12 @@ function open_with_wps(dirName: string, fileName: string) {
         </div>
       </template>
     </el-table-column>
-    <el-table-column :label=MD5_OR_BLAKE2 width="155">
+    <el-table-column :label=MD5_OR_BLAKE2 width="160">
       <template #default="scope">
         <div>
-          <div class="tile-text tile-md5">
+          <div class="tile-text tile-md5" :style="{ opacity: (scope.row.focus? '0.4': '1')}" @click="removeItem(scope.$index)">
             {{ scope.row.md5.slice(0, 16) ?? '--' }}
           </div>
-          <el-icon class="tile-delete" @click="removeItem(scope.$index)">
-            <Delete/>
-          </el-icon>
         </div>
       </template>
     </el-table-column>
@@ -196,30 +188,6 @@ function open_with_wps(dirName: string, fileName: string) {
 .tile-copy:hover {
   cursor: pointer;
   color: #3c91f8;
-}
-
-.tile-delete {
-  position: absolute;
-  right: 6px;
-  top: 14px;
-}
-
-.tile-delete:hover {
-  cursor: pointer;
-  color: #cccccc;
-}
-
-.tile-delete-all {
-  position: absolute;
-  right: 2rem;
-  top: 3.2rem;
-  z-index: 999;
-  color: black;
-}
-
-.tile-delete-all:hover {
-  cursor: pointer;
-  color: #cccccc;
 }
 
 .filePath {
