@@ -1,20 +1,23 @@
-use serde::Serialize;
 use std::sync::mpsc;
 use std::thread;
-use tauri::tray::MouseButtonState;
+
+use serde::Serialize;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 use tauri::{
+    Manager,
     menu::{MenuBuilder, MenuItemBuilder},
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
-    Manager,
 };
 use tauri::{DragDropEvent, Emitter, WindowEvent};
+use tauri::tray::MouseButtonState;
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
+use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
+
+use utils::{check_update, restart, show_page};
+
+use crate::utils::{handle_auto_start, handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps};
 
 mod utils;
-use crate::utils::{handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps, handle_auto_start};
-use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
-use utils::{check_update, restart, show_page};
 #[derive(Serialize, Clone)]
 struct Link {
     link: String,
@@ -36,7 +39,7 @@ pub fn run() {
             let update = MenuItemBuilder::new("检查更新(U)").id("update").build(app).unwrap();
             let restart_ = MenuItemBuilder::new("重启(R)").id("restart").build(app).unwrap();
             let autostart_manager = app.autolaunch();
-            let auto_start_title = if autostart_manager.is_enabled().unwrap(){ "开机自启动(✔️)" } else { "开机自启动(❌)" };
+            let auto_start_title = if autostart_manager.is_enabled().unwrap() { "开机自启动(✔️)" } else { "开机自启动(❌)" };
             let auto_start = MenuItemBuilder::new(auto_start_title).id("auto_start").build(app).unwrap();
             let tray_menu = MenuBuilder::new(app)
                 .items(&[&help_, &update, &restart_, &about, &hide, &quit, &auto_start]) // insert the menu items here
@@ -46,14 +49,14 @@ pub fn run() {
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&tray_menu)
                 .on_menu_event(move |app, event| match event.id().as_ref() {
-                    "help" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/RainWarm?tab=readme-ov-file#使用帮助".to_string() })).unwrap(),
+                    "help" => app.emit("open_link", Some(Link { link: "https://github.com/initialencounter/RainWarm?tab=readme-ov-file#使用帮助".to_string() })).unwrap(),
                     "quit" => app.exit(0),
                     "hide" => {
                         let window = app.get_webview_window("main").unwrap();
                         handle_hide_or_show(window, hide.clone());
                     }
                     "restart" => restart(),
-                    "about" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/rainwarm".to_string() })).unwrap(),
+                    "about" => app.emit("open_link", Some(Link { link: "https://github.com/initialencounter/rainwarm".to_string() })).unwrap(),
                     "update" => {
                         let current_version = format!("v{}", env!("CARGO_PKG_VERSION"));
                         let latest = check_update(String::from("000"));
@@ -61,11 +64,11 @@ pub fn run() {
                             app.dialog().message("检查更新失败!").kind(MessageDialogKind::Error).show(|_| {});
                         } else if latest != current_version {
                             app.dialog().message(format!("发现新版本{}，是否前往", latest)).kind(MessageDialogKind::Info).show(|_| {});
-                            app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/RainWarm/releases/latest".to_string() })).unwrap();
+                            app.emit("open_link", Some(Link { link: "https://github.com/initialencounter/RainWarm/releases/latest".to_string() })).unwrap();
                         } else {
                             app.dialog().message("当前版本是最新版").kind(MessageDialogKind::Info).show(|_| {});
                         }
-                    },
+                    }
                     "auto_start" => handle_auto_start(app.clone(), auto_start.clone()),
                     _ => {}
                 })

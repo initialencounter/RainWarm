@@ -1,13 +1,14 @@
-use blake2::{Blake2b512, Digest};
-use chrono::{DateTime, Local};
-use reqwest;
-use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::Path;
 use std::sync::mpsc;
 use std::time::SystemTime;
+
+use blake2::{Blake2b512, Digest};
+use chrono::{DateTime, Local};
+use reqwest;
+use serde::{Deserialize, Serialize};
 use tauri::{self, AppHandle, Manager, WebviewWindow, Wry};
 use tauri::menu::MenuItem;
 use tauri_plugin_autostart::ManagerExt;
@@ -23,7 +24,7 @@ pub fn restart() {
 }
 
 #[tauri::command]
-pub fn show_page(app:AppHandle) {
+pub fn show_page(app: AppHandle) {
     println!("show_page");
     hide_or_show(app.get_webview_window("main").unwrap());
 }
