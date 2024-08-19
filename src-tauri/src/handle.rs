@@ -2,14 +2,14 @@ use std::{fs, thread};
 use std::path::PathBuf;
 use std::sync::mpsc;
 
-use tauri::{AppHandle, Emitter, Manager, Window, Wry};
-use tauri::menu::MenuItem;
-use tauri::tray::{MouseButton, MouseButtonState, TrayIcon, TrayIconEvent};
+use tauri::{App, AppHandle, Emitter, Manager, Window, Wry};
+use tauri::menu::{MenuBuilder, MenuItem};
+use tauri::tray::{MouseButton, MouseButtonState, TrayIcon, TrayIconBuilder, TrayIconEvent};
 use tauri_plugin_autostart::ManagerExt;
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 
-use crate::Link;
-use crate::utils::{calculate_blake2b512, check_update, FileTile, hide_or_show};
+use crate::{Link, menu};
+use crate::utils::{calculate_blake2b512, check_update, FileTile, hide_or_show, restart};
 
 pub fn handle_file(path: String, tx: mpsc::Sender<FileTile>) {
     let file_tile = calculate_blake2b512(path.to_string());
@@ -105,4 +105,32 @@ pub fn handle_menu_event_update(app: &AppHandle<Wry>) {
     } else {
         app.dialog().message("当前版本是最新版").kind(MessageDialogKind::Info).show(|_| {});
     }
+}
+
+pub fn handle_setup(app: &mut App) {
+    let [help_, quit, hide,
+    about, update, restart_,
+    auto_start] = menu::create_menu_item(app);
+    let tray_menu = MenuBuilder::new(app)
+        .items(&[&help_, &update, &restart_, &auto_start, &about, &hide, &quit]) // insert the menu items here
+        .build()
+        .unwrap();
+    let _ = TrayIconBuilder::with_id("system-tray-1")
+        .icon(app.default_window_icon().unwrap().clone())
+        .menu(&tray_menu)
+        .on_menu_event(move |app, event| match event.id().as_ref() {
+            "help" => app.emit("open_link", Some(Link { link: "https://github.com/initialencounter/RainWarm?tab=readme-ov-file#使用帮助".to_string() })).unwrap(),
+            "quit" => app.exit(0),
+            "hide" => handle_hide_or_show(&app, &hide),
+            "restart" => restart(),
+            "about" => app.emit("open_link", Some(Link { link: "https://github.com/initialencounter/rainwarm".to_string() })).unwrap(),
+            "update" => handle_menu_event_update(&app),
+            "auto_start" => handle_auto_start(&app, &auto_start),
+            _ => {}
+        })
+        .on_tray_icon_event(|tray, event| {
+            handle_tray_icon_event(tray, &event);
+        })
+        .build(app).unwrap();
+    app.get_webview_window("main").unwrap().set_always_on_top(true).expect("Failed to set window as topmost");
 }
