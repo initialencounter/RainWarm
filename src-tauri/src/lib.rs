@@ -15,9 +15,12 @@ use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 
 use utils::{check_update, restart, show_page};
 
-use crate::utils::{handle_auto_start, handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps};
+use crate::utils::{hide_or_show, open_local_dir, open_with_wps};
+use crate::handle::{handle_auto_start, handle_hide_or_show, handle_directory, handle_file};
 
 mod utils;
+mod handle;
+
 #[derive(Serialize, Clone)]
 struct Link {
     link: String,
