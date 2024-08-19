@@ -22,6 +22,7 @@
     "global-shortcut:allow-register",
     "global-shortcut:allow-unregister",
     "shell:allow-open",
-    "global-shortcut:default"
+    "global-shortcut:default",
+    "autostart:default"
   ]
 }

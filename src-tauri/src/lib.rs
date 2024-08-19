@@ -9,9 +9,10 @@ use tauri::{
     Manager,
 };
 use tauri::{DragDropEvent, Emitter, WindowEvent};
+use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 
 mod utils;
-use crate::utils::{handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps};
+use crate::utils::{handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps, handle_auto_start};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 use utils::{check_update, restart, show_page};
 #[derive(Serialize, Clone)]
@@ -21,6 +22,10 @@ struct Link {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            None,
+        ))
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
@@ -30,8 +35,11 @@ pub fn run() {
             let about = MenuItemBuilder::new("关于(A)").id("about").build(app).unwrap();
             let update = MenuItemBuilder::new("检查更新(U)").id("update").build(app).unwrap();
             let restart_ = MenuItemBuilder::new("重启(R)").id("restart").build(app).unwrap();
+            let autostart_manager = app.autolaunch();
+            let auto_start_title = if autostart_manager.is_enabled().unwrap(){ "开机自启动(✔️)" } else { "开机自启动(❌)" };
+            let auto_start = MenuItemBuilder::new(auto_start_title).id("auto_start").build(app).unwrap();
             let tray_menu = MenuBuilder::new(app)
-                .items(&[&help_, &update, &restart_, &about, &hide, &quit]) // insert the menu items here
+                .items(&[&help_, &update, &restart_, &about, &hide, &quit, &auto_start]) // insert the menu items here
                 .build()
                 .unwrap();
             let _ = TrayIconBuilder::with_id("system-tray-1")
@@ -57,7 +65,8 @@ pub fn run() {
                         } else {
                             app.dialog().message("当前版本是最新版").kind(MessageDialogKind::Info).show(|_| {});
                         }
-                    }
+                    },
+                    "auto_start" => handle_auto_start(app.clone(), auto_start.clone()),
                     _ => {}
                 })
                 .on_tray_icon_event(|tray, event| {

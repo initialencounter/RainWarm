@@ -10,6 +10,7 @@ use std::sync::mpsc;
 use std::time::SystemTime;
 use tauri::{self, AppHandle, Manager, WebviewWindow, Wry};
 use tauri::menu::MenuItem;
+use tauri_plugin_autostart::ManagerExt;
 
 #[derive(Deserialize)]
 struct Release {
@@ -187,4 +188,21 @@ pub fn handle_directory(path: String, tx: mpsc::Sender<FileTile>) {
 pub fn handle_hide_or_show(window: WebviewWindow, hide: MenuItem<Wry>) {
     let title = hide_or_show(window);
     hide.set_text(title).expect("Failed to set tray text");
+}
+
+pub fn handle_auto_start(app: AppHandle<Wry>, auto_start: MenuItem<Wry>) {
+    let autostart_manager = app.autolaunch();
+    let is_enabled = autostart_manager.is_enabled().unwrap();
+    if is_enabled {
+        let _ = autostart_manager.disable();
+    } else {
+        let _ = autostart_manager.enable();
+    }
+    auto_start
+        .set_text(if is_enabled {
+            "开机自启动(❌)"
+        } else {
+            "开机自启动(✔️)"
+        })
+        .expect("Failed to set tray text");
 }
