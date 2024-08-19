@@ -8,7 +8,8 @@ use std::io::{BufReader, Read};
 use std::path::Path;
 use std::sync::mpsc;
 use std::time::SystemTime;
-use tauri::{self, AppHandle, Manager, WebviewWindow};
+use tauri::{self, AppHandle, Manager, WebviewWindow, Wry};
+use tauri::menu::MenuItem;
 
 #[derive(Deserialize)]
 struct Release {
@@ -79,14 +80,16 @@ pub fn check_update(flag: String) -> String {
     release.tag_name
 }
 
-pub fn hide_or_show(window: WebviewWindow) {
+pub fn hide_or_show<'a>(window: WebviewWindow) -> &'a str {
     if window.is_visible().unwrap() {
         window.hide().unwrap();
+        "显示(S)"
     } else {
         window
             .set_always_on_top(true)
             .expect("Failed to set window as topmost");
         window.show().unwrap();
+        "隐藏(H)"
     }
 }
 
@@ -179,4 +182,9 @@ pub fn handle_directory(path: String, tx: mpsc::Sender<FileTile>) {
         }
         Err(e) => eprintln!("Failed to read directory: {}", e),
     }
+}
+
+pub fn handle_hide_or_show(window: WebviewWindow, hide: MenuItem<Wry>) {
+    let title = hide_or_show(window);
+    hide.set_text(title).expect("Failed to set tray text");
 }

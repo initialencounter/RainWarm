@@ -11,7 +11,7 @@ use tauri::{
 use tauri::{DragDropEvent, Emitter, WindowEvent};
 
 mod utils;
-use crate::utils::{handle_directory, handle_file, hide_or_show, open_local_dir, open_with_wps};
+use crate::utils::{handle_directory, handle_file, handle_hide_or_show, hide_or_show, open_local_dir, open_with_wps};
 use tauri_plugin_dialog::{DialogExt, MessageDialogKind};
 use utils::{check_update, restart, show_page};
 #[derive(Serialize, Clone)]
@@ -34,15 +34,15 @@ pub fn run() {
                 .items(&[&help_, &update, &restart_, &about, &hide, &quit]) // insert the menu items here
                 .build()
                 .unwrap();
-            let _ = TrayIconBuilder::new()
+            let _ = TrayIconBuilder::with_id("system-tray-1")
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&tray_menu)
-                .on_menu_event(|app, event| match event.id().as_ref() {
+                .on_menu_event(move |app, event| match event.id().as_ref() {
                     "help" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/RainWarm?tab=readme-ov-file#使用帮助".to_string() })).unwrap(),
                     "quit" => app.exit(0),
                     "hide" => {
                         let window = app.get_webview_window("main").unwrap();
-                        hide_or_show(window);
+                        handle_hide_or_show(window, hide.clone());
                     }
                     "restart" => restart(),
                     "about" => app.emit("open_link", Some(Link{link: "https://github.com/initialencounter/rainwarm".to_string() })).unwrap(),
